@@ -1,109 +1,109 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
 #include <conio.h>
 #include <time.h>
 
-#define LEFT   75      // ÁÂÃø¹æÇâÅ°
-#define RIGHT  77      // ¿ìÃø¹æÇâÅ°
-#define UP     72      // À§ÂÊ¹æÇâÅ°
-#define DOWN   80      // ¾Æ·¡¹æÇâÅ°
-#define ENTER  13	   // ¿£ÅÍ
-#define SPACE  32	   // ½ºÆäÀÌ½º
+#define LEFT   75      // ì¢Œì¸¡ë°©í–¥í‚¤
+#define RIGHT  77      // ìš°ì¸¡ë°©í–¥í‚¤
+#define UP     72      // ìœ„ìª½ë°©í–¥í‚¤
+#define DOWN   80      // ì•„ë˜ë°©í–¥í‚¤
+#define ENTER  13	   // ì—”í„°
+#define SPACE  32	   // ìŠ¤í˜ì´ìŠ¤
 #define MAX_CARD_SIZE 60
 #define MAX_LIST_SIZE 15
 
-void Print(void);//----------------------------------Ä«µå ¼¯´ÂÇÔ¼ö---------------------------//
+void Print(void);//----------------------------------ì¹´ë“œ ì„ëŠ”í•¨ìˆ˜---------------------------//
 
-//---------------------------Ä«µåÁ¤º¸±¸Á¶Ã¼¼±¾ğ------------------------------//
-typedef struct Cardinfo{
+//---------------------------ì¹´ë“œì •ë³´êµ¬ì¡°ì²´ì„ ì–¸------------------------------//
+typedef struct Cardinfo {
 	int num;
 	char shape;
 }Cardinfo;
 
-Cardinfo *deck;
+Cardinfo* deck;
 //--------------------------------------------------------------------------//
 
-//------------------------------½ºÅÃ ±¸Á¶Ã¼¼±¾ğ-----------------------------//
-typedef struct{
+//------------------------------ìŠ¤íƒ êµ¬ì¡°ì²´ì„ ì–¸-----------------------------//
+typedef struct {
 	Cardinfo item[MAX_CARD_SIZE];			//stack -> Cardinfo item
 	int top;
 }CardStack;
 
-CardStack *deck2;		
-CardStack *deck3;		
-int turn=0;
+CardStack* deck2;
+CardStack* deck3;
+int turn = 0;
 //--------------------------------------------------------------------------//
 
-//-----------------------------Ä¿¼­,gotoxyÇÔ¼ö-----------------------------//
-void removeCursor(void) // Ä¿¼­¸¦ ¾Èº¸ÀÌ°ÔÇÑ´Ù
+//-----------------------------ì»¤ì„œ,gotoxyí•¨ìˆ˜-----------------------------//
+void removeCursor(void) // ì»¤ì„œë¥¼ ì•ˆë³´ì´ê²Œí•œë‹¤
 {
 	CONSOLE_CURSOR_INFO curInfo;
 	GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &curInfo);
-	curInfo.bVisible=0;
+	curInfo.bVisible = 0;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &curInfo);
 }
-void gotoxy(int x, int y) // Ä¿¼­ ÀÌµ¿
+void gotoxy(int x, int y) // ì»¤ì„œ ì´ë™
 {
 	COORD Cur;
-	Cur.X=x;
-	Cur.Y=y;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),Cur);
+	Cur.X = x;
+	Cur.Y = y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
 }
 
 void print_win() {
-	gotoxy(20,8);
-	printf("¡á      ¡á    ¡á¡á¡á    ¡á    ¡á");
-	gotoxy(20,9);
-	printf("¡á  ¡á  ¡á      ¡á      ¡á¡á  ¡á");
-	gotoxy(20,10);
-	printf("¡á  ¡á  ¡á      ¡á      ¡á ¡á ¡á");
-	gotoxy(20,11);
-	printf(" ¡á ¡á ¡á       ¡á      ¡á  ¡á¡á");
-	gotoxy(20,12);
-	printf("  ¡á¡á¡á      ¡á¡á¡á    ¡á    ¡á");
-	gotoxy(30,13);
+	gotoxy(20, 8);
+	printf("â–       â–     â– â– â–     â–     â– ");
+	gotoxy(20, 9);
+	printf("â–   â–   â–       â–       â– â–   â– ");
+	gotoxy(20, 10);
+	printf("â–   â–   â–       â–       â–  â–  â– ");
+	gotoxy(20, 11);
+	printf(" â–  â–  â–        â–       â–   â– â– ");
+	gotoxy(20, 12);
+	printf("  â– â– â–       â– â– â–     â–     â– ");
+	gotoxy(30, 13);
 	printf("Pleas any key~");
 }
 
 void print_lose() {
-	gotoxy(20,8);
-	printf("¡á        ¡á     ¡á¡á   ¡á¡á¡á");
-	gotoxy(20,9);
-	printf("¡á      ¡á  ¡á  ¡á      ¡á    ");
-	gotoxy(20,10);
-	printf("¡á     ¡á    ¡á  ¡á¡á   ¡á¡á¡á");
-	gotoxy(20,11);
-	printf("¡á      ¡á  ¡á      ¡á  ¡á    ");
-	gotoxy(20,12);
-	printf("¡á¡á¡á    ¡á     ¡á¡á   ¡á¡á¡á");
-	gotoxy(30,13);
+	gotoxy(20, 8);
+	printf("â–         â–      â– â–    â– â– â– ");
+	gotoxy(20, 9);
+	printf("â–       â–   â–   â–       â–     ");
+	gotoxy(20, 10);
+	printf("â–      â–     â–   â– â–    â– â– â– ");
+	gotoxy(20, 11);
+	printf("â–       â–   â–       â–   â–     ");
+	gotoxy(20, 12);
+	printf("â– â– â–     â–      â– â–    â– â– â– ");
+	gotoxy(30, 13);
 	printf("Pleas any key~");
 }
 //--------------------------------------------------------------------------//
 
-//---------------------------------½ºÅÃ¼±¾ğ---------------------------------//
-void init(CardStack *s)
-{                                                
-	s->top = -1;			// topº¯¼ö´Â ½ºÅÃ¿¡ ¾Æ¹«·±µ¥ÀÌÅÍ°¡ ¾øÀ¸¸é -1°ªÀ» °¡Áø´Ù.
+//---------------------------------ìŠ¤íƒì„ ì–¸---------------------------------//
+void init(CardStack* s)
+{
+	s->top = -1;			// topë³€ìˆ˜ëŠ” ìŠ¤íƒì— ì•„ë¬´ëŸ°ë°ì´í„°ê°€ ì—†ìœ¼ë©´ -1ê°’ì„ ê°€ì§„ë‹¤.
 }
 
-int is_empty(CardStack *s)
+int is_empty(CardStack* s)
 {
-	return (s->top == -1);	// topº¯¼ö´Â ½ºÅÃ¿¡ ¾Æ¹«·±µ¥ÀÌÅÍ°¡ ¾øÀ¸¸é -1°ªÀ» °¡Áø´Ù.
+	return (s->top == -1);	// topë³€ìˆ˜ëŠ” ìŠ¤íƒì— ì•„ë¬´ëŸ°ë°ì´í„°ê°€ ì—†ìœ¼ë©´ -1ê°’ì„ ê°€ì§„ë‹¤.
 }
 
-int is_full(CardStack *s)
+int is_full(CardStack* s)
 {
-	return (s->top == (MAX_CARD_SIZE-1));	// ´õÀÌ»ó »ğÀÔºÒ°¡
+	return (s->top == (MAX_CARD_SIZE - 1));	// ë”ì´ìƒ ì‚½ì…ë¶ˆê°€
 }
 
-void push(CardStack *s, Cardinfo item)			//½ºÅÃ¿¡ »õ·Î¿î ¿ä¼Ò¸¦ »ğÀÔ
+void push(CardStack* s, Cardinfo item)			//ìŠ¤íƒì— ìƒˆë¡œìš´ ìš”ì†Œë¥¼ ì‚½ì…
 {
-	if(is_full(s))								// push()¿¡¼­ ½ºÅÃ¿¡ »õ·Î¿î ¿ä¼Ò¸¦ »ğÀÔÇÏ±âÀü¿¡ ÇÊ¿äÇÑ °ÍÀº											// is_fullÀ» È£ÃâÇÏ¿© ½ºÅÃÀÌ °¡µæÂ÷Áö ¾Ê¾Ò³ª °Ë»çÇÏ´Â °ÍÀÌ´Ù. 
+	if (is_full(s))								// push()ì—ì„œ ìŠ¤íƒì— ìƒˆë¡œìš´ ìš”ì†Œë¥¼ ì‚½ì…í•˜ê¸°ì „ì— í•„ìš”í•œ ê²ƒì€											// is_fullì„ í˜¸ì¶œí•˜ì—¬ ìŠ¤íƒì´ ê°€ë“ì°¨ì§€ ì•Šì•˜ë‚˜ ê²€ì‚¬í•˜ëŠ” ê²ƒì´ë‹¤. 
 	{
-		fprintf(stderr,"½ºÅÃ Æ÷È­ ¿¡·¯\n");		
+		fprintf(stderr, "ìŠ¤íƒ í¬í™” ì—ëŸ¬\n");
 		return;
 	}
 	else
@@ -111,44 +111,44 @@ void push(CardStack *s, Cardinfo item)			//½ºÅÃ¿¡ »õ·Î¿î ¿ä¼Ò¸¦ »ğÀÔ
 
 }
 
-Cardinfo pop(CardStack *s)						//	½ºÅÃ¿¡¼­ ÇÏ³ªÀÇ ¿ä¼Ò¸¦ Á¦°Å
-{												//	topÀÌ °¡¸£Å°´Â ¿ä¼Ò¸¦ ½ºÅÃ¿¡¼­ ²¨³»¾î ¿ÜºÎ·Î °ÇÁ¦ÁÖ´Â ¿¬»ê
-	if(is_empty(s))								//  Á¦°ÅÇÏ±âÀü¿¡ ¿ä¼Ò°¡ ºñ¾îÀÖ´ÂÁö¸¦ °Ë»ç is_empty()
+Cardinfo pop(CardStack* s)						//	ìŠ¤íƒì—ì„œ í•˜ë‚˜ì˜ ìš”ì†Œë¥¼ ì œê±°
+{												//	topì´ ê°€ë¥´í‚¤ëŠ” ìš”ì†Œë¥¼ ìŠ¤íƒì—ì„œ êº¼ë‚´ì–´ ì™¸ë¶€ë¡œ ê±´ì œì£¼ëŠ” ì—°ì‚°
+	if (is_empty(s))								//  ì œê±°í•˜ê¸°ì „ì— ìš”ì†Œê°€ ë¹„ì–´ìˆëŠ”ì§€ë¥¼ ê²€ì‚¬ is_empty()
 	{
-		fprintf(stderr, "½ºÅÃ °ø¹é ¿¡·¯\n");	//  ½ºÅÃÀÌ ºñ¾îÀÖÀ¸¸é ¿À·ù¸Ş¼¼Áö Ãâ·Â
+		fprintf(stderr, "ìŠ¤íƒ ê³µë°± ì—ëŸ¬\n");	//  ìŠ¤íƒì´ ë¹„ì–´ìˆìœ¼ë©´ ì˜¤ë¥˜ë©”ì„¸ì§€ ì¶œë ¥
 		exit(1);
 	}
-	else return s->item[(s->top)--];				// ºñ¾îÀÖÁö ¾ÊÀ¸¸é topÀÌ °¡¸®Å°´Â °ªÀ» ¹İÈ¯ÇÏ°í topÀ» ÇÏ³ª °¨¼Ò½ÃÅ²´Ù.
+	else return s->item[(s->top)--];				// ë¹„ì–´ìˆì§€ ì•Šìœ¼ë©´ topì´ ê°€ë¦¬í‚¤ëŠ” ê°’ì„ ë°˜í™˜í•˜ê³  topì„ í•˜ë‚˜ ê°ì†Œì‹œí‚¨ë‹¤.
 }
 
-Cardinfo peek(CardStack *s)						
+Cardinfo peek(CardStack* s)
 {
-	if(is_empty(s))
+	if (is_empty(s))
 	{
-		fprintf(stderr, "½ºÅÃ °ø¹é ¿¡·¯\n");
+		fprintf(stderr, "ìŠ¤íƒ ê³µë°± ì—ëŸ¬\n");
 		exit(1);
 	}
 	else return s->item[s->top];
 }
 //--------------------------------------------------------------------------//
 typedef struct {
-	Cardinfo list[MAX_LIST_SIZE];	  // ¹è¿­ Á¤ÀÇ
-	int length;		  // ÇöÀç ¹è¿­¿¡ ÀúÀåµÈ Ç×¸ñµéÀÇ °³¼ö
+	Cardinfo list[MAX_LIST_SIZE];	  // ë°°ì—´ ì •ì˜
+	int length;		  // í˜„ì¬ ë°°ì—´ì— ì €ì¥ëœ í•­ëª©ë“¤ì˜ ê°œìˆ˜
 } ArrayListType;
 //--------------------------------------------------------------------------//
 
-void init_list(ArrayListType *l)
+void init_list(ArrayListType* l)
 {
 	l->length = 0;
 }
 
-int is_empty_list(ArrayListType *l)
+int is_empty_list(ArrayListType* l)
 {
 	return l->length == 0;
 }
 
 
-int is_full_list(ArrayListType *l)
+int is_full_list(ArrayListType* l)
 {
 	return l->length == MAX_LIST_SIZE;
 }
@@ -156,27 +156,27 @@ int is_full_list(ArrayListType *l)
 void card_charge(void)
 {
 	Cardinfo tmp;
-	tmp=pop(deck3);
-	while(deck3->top>=0)
+	tmp = pop(deck3);
+	while (deck3->top >= 0)
 	{
-		push(deck2,pop(deck3));
-		gotoxy(35,15); printf("Ä«µå°¡ ´Ù½Ã ¼¯¿´½À´Ï´Ù.");
+		push(deck2, pop(deck3));
+		gotoxy(35, 15); printf("ì¹´ë“œê°€ ë‹¤ì‹œ ì„ì˜€ìŠµë‹ˆë‹¤.");
 	}
-	push(deck3,tmp);
+	push(deck3, tmp);
 }
 
-Cardinfo delete_list(ArrayListType *l, int position)
+Cardinfo delete_list(ArrayListType* l, int position)
 {
 	int i;
 	Cardinfo item;
-	//-----------------------------------Ãß°¡---------------------------------
-	if(l->length==1 && turn == 0)
+	//-----------------------------------ì¶”ê°€---------------------------------
+	if (l->length == 1 && turn == 0)
 	{
 		system("cls");
 		print_win();
 		exit(1);
 	}
-	else if(l->length==1 && turn == 1)
+	else if (l->length == 1 && turn == 1)
 	{
 		system("cls");
 		print_lose();
@@ -184,28 +184,28 @@ Cardinfo delete_list(ArrayListType *l, int position)
 	}
 	//------------------------------------------------------------------------
 	item = l->list[position];
-	for(i=position; i<(l->length-1);i++)
-		l->list[i] = l->list[i+1];
+	for (i = position; i < (l->length - 1); i++)
+		l->list[i] = l->list[i + 1];
 	l->length--;
 	return item;
 }
 
 ArrayListType you;
 ArrayListType computer;
-//----------------------------------Ä«µå ¼¯´ÂÇÔ¼ö---------------------------//
-void shuffle(Cardinfo *deck)
+//----------------------------------ì¹´ë“œ ì„ëŠ”í•¨ìˆ˜---------------------------//
+void shuffle(Cardinfo* deck)
 {
-	int i,j,n=0;
+	int i, j, n = 0;
 	int tmp;
 	char tempshape;
-	
-	for(i=0; i<52; i++)
-		srand((unsigned)time(NULL));	//·£´ıÇÔ¼ö ¾²±âÀ§ÇØ »ç¿ë
-	for(n=0; n<100; n++){
-		i=rand()%52;		//0~52±îÁö¼¯´Â´Ù
-		j=rand()%52;
-	
-		
+
+	for (i = 0; i < 52; i++)
+		srand((unsigned)time(NULL));	//ëœë¤í•¨ìˆ˜ ì“°ê¸°ìœ„í•´ ì‚¬ìš©
+	for (n = 0; n < 100; n++) {
+		i = rand() % 52;		//0~52ê¹Œì§€ì„ëŠ”ë‹¤
+		j = rand() % 52;
+
+
 		tmp = deck[i].num;
 		deck[i].num = deck[j].num;
 		deck[j].num = tmp;
@@ -213,449 +213,403 @@ void shuffle(Cardinfo *deck)
 		tempshape = deck[i].shape;
 		deck[i].shape = deck[j].shape;
 		deck[j].shape = tempshape;
-	
+
 	}
 }
 //---------------------------------------------------------------------//
 
-//---------------------------Ä«µå ÃÊ±âÈ­ÇÔ¼ö---------------------------//
+//---------------------------ì¹´ë“œ ì´ˆê¸°í™”í•¨ìˆ˜---------------------------//
 void card_init()
 {
-	int i,j;
+	int i, j;
 	char shape;
-	deck = (Cardinfo *)malloc(sizeof(Cardinfo)*52);	//Æ÷ÀÎÅÍ ÁÖ¼Ò¸¸ÀÖ±â¶§¹®¿¡ µ¿ÀûÇÒ´ç
-		for(i=0; i<52; i++)
-		{
-		deck[i].num = (i%13)+1; // % ³ª¸ÓÁö
-		if(i/13 == 0)
+	deck = (Cardinfo*)malloc(sizeof(Cardinfo) * 52);	//í¬ì¸í„° ì£¼ì†Œë§Œìˆê¸°ë•Œë¬¸ì— ë™ì í• ë‹¹
+	for (i = 0; i < 52; i++)
+	{
+		deck[i].num = (i % 13) + 1; // % ë‚˜ë¨¸ì§€
+		if (i / 13 == 0)
 			shape = 'h';
-		else if(i/13 == 1)
+		else if (i / 13 == 1)
 			shape = 'd';
-		else if(i/13 == 2)
+		else if (i / 13 == 2)
 			shape = 'c';
-		else if(i/13 == 3)
+		else if (i / 13 == 3)
 			shape = 's';
 		deck[i].shape = shape;
-		}
-		shuffle(deck);
-		deck2 = (CardStack *)malloc(sizeof(CardStack));		
-		init(deck2);
-		
-		for(i=0; i<52; i++)
-		{
-			push(deck2,deck[i]);
-		}
+	}
+	shuffle(deck);
+	deck2 = (CardStack*)malloc(sizeof(CardStack));
+	init(deck2);
+
+	for (i = 0; i < 52; i++)
+	{
+		push(deck2, deck[i]);
+	}
 }
 //----------------------------------------------------------------------//
 
-//---------------------------°ÔÀÓ ÃÊ±âÈ­ÇÔ¼ö----------------------------//
+//---------------------------ê²Œì„ ì´ˆê¸°í™”í•¨ìˆ˜----------------------------//
 void Game_init()
 {
-	int i=0;
+	int i = 0;
 	init_list(&you);
 	init_list(&computer);
 	card_init();
-	for(i=0; i<5; i++)
+	for (i = 0; i < 5; i++)
 	{
 		you.list[you.length++] = pop(deck2);
 		computer.list[computer.length++] = pop(deck2);
 	}
-	deck3 = (CardStack *)malloc(sizeof(CardStack));
+	deck3 = (CardStack*)malloc(sizeof(CardStack));
 	init(deck3);
-	push(deck3, pop(deck2));//ÇÑÀå
+	push(deck3, pop(deck2));//í•œì¥
 }
 //---------------------------------------------------------------------//
-void Card_Attack(ArrayListType * u, Cardinfo a)
+void Card_Attack(ArrayListType* u, Cardinfo a)
 {
-	if(a.num == 2)			// ¼ıÀÚ2 == Ä«µå2Àå¹Ş±â
+	if (a.num == 2)			// ìˆ«ì2 == ì¹´ë“œ2ì¥ë°›ê¸°
 	{
-		u->list[u->length++]=pop(deck2);
-		u->list[u->length++]=pop(deck2);
+		u->list[u->length++] = pop(deck2);
+		u->list[u->length++] = pop(deck2);
 	}
-	if(a.num == 1)			// A == Ä«µå3Àå¹Ş±â
+	if (a.num == 1)			// A == ì¹´ë“œ3ì¥ë°›ê¸°
 	{
-		u->list[u->length++]=pop(deck2);
-		u->list[u->length++]=pop(deck2);
-		u->list[u->length++]=pop(deck2);
+		u->list[u->length++] = pop(deck2);
+		u->list[u->length++] = pop(deck2);
+		u->list[u->length++] = pop(deck2);
 	}
-	if(a.num == 11 || a.num == 13)
+	if (a.num == 11 || a.num == 13)
 	{
-		if(turn==1)
-			turn=0;
+		if (turn == 1)
+			turn = 0;
 		else
-			turn=1;
+			turn = 1;
 	}
 }
-//---------------------------Ä«µå ³»¿ëÃâ·ÂÇÔ¼ö-------------------------//
-void Print2()   
+//---------------------------ì¹´ë“œ ë‚´ìš©ì¶œë ¥í•¨ìˆ˜-------------------------//
+void Print2()
 {
-   
-   int i=0;
-   for(i=0;i<you.length; i++)
-   {
-	   if(you.list[i].shape=='d')
-	   {
-		  gotoxy(8+(i*4),18);   printf("¡ß",you.list[i].shape);
-	   }
-	   else if(you.list[i].shape=='c')
-	   {
-		   gotoxy(8+(i*4),18);   printf("¢À",you.list[i].shape);
-	   }
-	   else if(you.list[i].shape=='s')
-	   {
-		   gotoxy(8+(i*4),18);   printf("¢¼",you.list[i].shape);
-	   }
-	   else if(you.list[i].shape=='h')
-	   {
-		   gotoxy(8+(i*4),18);   printf("¢¾",you.list[i].shape);
-	   }
 
-	  if(you.list[i].num == 1){
-         gotoxy(8+(i*4),19);  printf("A ");
-      }
-      else if(you.list[i].num == 11){
-         gotoxy(8+(i*4),19); printf("J ");
-      }
-      else if(you.list[i].num == 12){
-         gotoxy(8+(i*4),19); printf("Q ");
-      }
-      else if(you.list[i].num == 13){
-         gotoxy(8+(i*4),19); printf("K ");
-      }
-      else {
-         gotoxy(8+(i*4),19); printf("%d ", you.list[i].num);
-      }
-   }
-    
-   for(i=you.length;i<15; i++)
-   {
-	  gotoxy(8+(i*4),18);  printf("  ");
-	  gotoxy(8+(i*4),19);  printf("  ");
-   }
-   
-   for(i=0; i<computer.length; i++)
-   {
-	  gotoxy(8+(i*4),3); printf("%c",computer.list[i].shape);
-	   gotoxy(8+(i*4),4); printf("%d",computer.list[i].num);
-	   //gotoxy(8+(i*4),3); printf("?");
-	  // gotoxy(8+(i*4),4); printf("?");
-   }
-   
-   for(i=computer.length;i<15; i++)
-   {
-	  gotoxy(8+(i*4),3);  printf("  ");
-	  gotoxy(8+(i*4),4);  printf("  ");
-   }
-   
-   	   if(peek(deck3).shape=='d')
-	   {
-		    gotoxy(32,10); printf("¡ß",peek(deck3).shape);
-	   }
-	   else if(peek(deck3).shape=='c')
-	   {
-		    gotoxy(32,10); printf("¢À",peek(deck3).shape);
-	   }
+	int i = 0;
+	for (i = 0; i < you.length; i++)
+	{
+		if (you.list[i].shape == 'd')
+		{
+			gotoxy(8 + (i * 4), 18);   printf("â—†", you.list[i].shape);
+		}
+		else if (you.list[i].shape == 'c')
+		{
+			gotoxy(8 + (i * 4), 18);   printf("â™£", you.list[i].shape);
+		}
+		else if (you.list[i].shape == 's')
+		{
+			gotoxy(8 + (i * 4), 18);   printf("â™ ", you.list[i].shape);
+		}
+		else if (you.list[i].shape == 'h')
+		{
+			gotoxy(8 + (i * 4), 18);   printf("â™¥", you.list[i].shape);
+		}
 
-	   else if(peek(deck3).shape=='s')
-	   {
-		    gotoxy(32,10); printf("¢¼",peek(deck3).shape);
-	   }
-	   else if(peek(deck3).shape=='h')
-	   {
-		    gotoxy(32,10); printf("¢¾",peek(deck3).shape);
-	   }
-   gotoxy(32,11); printf("%d ",peek(deck3).num);
-   if(peek(deck3).num == 1){
-	gotoxy(32,11); printf("A ");
-   }
-   else if(peek(deck3).num == 11){
-	   gotoxy(32,11); printf("J ");
-   }
-   else if(peek(deck3).num == 12){
-	   gotoxy(32,11); printf("Q ");
-   }
-   else if(peek(deck3).num == 13){
-	   gotoxy(32,11); printf("K ");
-   }
+		if (you.list[i].num == 1) {
+			gotoxy(8 + (i * 4), 19);  printf("A ");
+		}
+		else if (you.list[i].num == 11) {
+			gotoxy(8 + (i * 4), 19); printf("J ");
+		}
+		else if (you.list[i].num == 12) {
+			gotoxy(8 + (i * 4), 19); printf("Q ");
+		}
+		else if (you.list[i].num == 13) {
+			gotoxy(8 + (i * 4), 19); printf("K ");
+		}
+		else {
+			gotoxy(8 + (i * 4), 19); printf("%d ", you.list[i].num);
+		}
+	}
+
+	for (i = you.length; i < 15; i++)
+	{
+		gotoxy(8 + (i * 4), 18);  printf("  ");
+		gotoxy(8 + (i * 4), 19);  printf("  ");
+	}
+
+	for (i = 0; i < computer.length; i++)
+	{
+		//gotoxy(8 + (i * 4), 3); printf("%c", computer.list[i].shape);
+		//gotoxy(8 + (i * 4), 4); printf("%d", computer.list[i].num);
+		gotoxy(8+(i*4),3); printf("?");
+	    gotoxy(8+(i*4),4); printf("?");
+	}
+
+	for (i = computer.length; i < 15; i++)
+	{
+		gotoxy(8 + (i * 4), 3);  printf("");
+		gotoxy(8 + (i * 4), 4);  printf("");
+	}
+
+	if (peek(deck3).shape == 'd')
+	{
+		gotoxy(32, 10); printf("â—†", peek(deck3).shape);
+	}
+	else if (peek(deck3).shape == 'c')
+	{
+		gotoxy(32, 10); printf("â™£", peek(deck3).shape);
+	}
+
+	else if (peek(deck3).shape == 's')
+	{
+		gotoxy(32, 10); printf("â™ ", peek(deck3).shape);
+	}
+	else if (peek(deck3).shape == 'h')
+	{
+		gotoxy(32, 10); printf("â™¥", peek(deck3).shape);
+	}
+	gotoxy(32, 11); printf("%d ", peek(deck3).num);
+	if (peek(deck3).num == 1) {
+		gotoxy(32, 11); printf("A ");
+	}
+	else if (peek(deck3).num == 11) {
+		gotoxy(32, 11); printf("J ");
+	}
+	else if (peek(deck3).num == 12) {
+		gotoxy(32, 11); printf("Q ");
+	}
+	else if (peek(deck3).num == 13) {
+		gotoxy(32, 11); printf("K ");
+	}
 }
 //---------------------------------------------------------------------------//
-void card_select(ArrayListType *u)
+void card_select(ArrayListType* u)
 {
-	if(is_full_list(u))
+	if (is_full_list(u))
 	{
-		//printf("²ËÂü");
+		//printf("ê½‰ì°¸");
 		system("cls");
 		print_lose();
 		exit(1);
 	}
 	else
 	{
-		u->list[u->length++]=pop(deck2);
-		Print2();		//Ä«µå¹Ş¾Æ¿À°í Ãâ·Â
+		u->list[u->length++] = pop(deck2);
+		Print2();		//ì¹´ë“œë°›ì•„ì˜¤ê³  ì¶œë ¥
 	}
 }
 
 void card_throw(int position)
 {
-	if((you.list[position].num == peek(deck3).num) || (you.list[position].shape == peek(deck3).shape))
+	if ((you.list[position].num == peek(deck3).num) || (you.list[position].shape == peek(deck3).shape))
 	{
-		
-		push(deck3,delete_list(&you,position));
-		Card_Attack(&computer,peek(deck3));
-		Print();		// ³¾ ¼ö ¾ø´Â Ä«µå¸¦ ¾ø¾Ú
+
+		push(deck3, delete_list(&you, position));
+		Card_Attack(&computer, peek(deck3));
+		Print();		// ë‚¼ ìˆ˜ ì—†ëŠ” ì¹´ë“œë¥¼ ì—†ì•°
 		Print2();
-		turn=1;
-		
+		turn = 1;
+
 	}
 	else
 	{
-		
-		gotoxy(32,15); printf("³¾ ¼ö ¾ø´Â Ä«µåÀÔ´Ï´Ù.");
-		fflush(stdin);	//¿£ÅÍ¸¦ ´©¸£¸é ÇØ´çº¯¼ö·Î ¸ÅÄª, ÀÌ ¹öÆÛ¸¦ Áö¿î´Ù.
-		
+
+		gotoxy(32, 15); printf("ë‚¼ ìˆ˜ ì—†ëŠ” ì¹´ë“œì…ë‹ˆë‹¤.");
+		fflush(stdin);	//ì—”í„°ë¥¼ ëˆ„ë¥´ë©´ í•´ë‹¹ë³€ìˆ˜ë¡œ ë§¤ì¹­, ì´ ë²„í¼ë¥¼ ì§€ìš´ë‹¤.
+
 	}
 }
 
 void card_throw_c(void)
 {
-	int i=0;
-	for(i=0; i<computer.length; i++)
+	int i = 0;
+	Cardinfo thrownCard;  // ì¶”ê°€: ìƒëŒ€ë°©ì´ ë‚¸ ì¹´ë“œ ì •ë³´ë¥¼ ì €ì¥í•˜ëŠ” ë³€ìˆ˜
+
+	for (i = 0; i < computer.length; i++)
 	{
-		if((computer.list[i].num == peek(deck3).num) || (computer.list[i].shape == peek(deck3).shape))
-		{			
-			
-			push(deck3,delete_list(&computer,i));
-			Card_Attack(&you,peek(deck3));
+		if ((computer.list[i].num == peek(deck3).num) || (computer.list[i].shape == peek(deck3).shape))
+		{
+			thrownCard = delete_list(&computer, i);  // ìƒëŒ€ë°©ì´ ë‚¸ ì¹´ë“œë¥¼ ê°€ì ¸ì˜´
+			push(deck3, thrownCard);  // ë‚¸ ì¹´ë“œë¥¼ ì¤‘ì•™ ë±ì— ë„£ìŒ
+			Card_Attack(&you, peek(deck3));
 			Print2();
-			turn=0;
+			turn = 0;
+
+			// ì¶”ê°€: ìƒëŒ€ë°©ì´ ë‚¸ ì¹´ë“œ ì •ë³´ë¥¼ í™”ë©´ì— ì¶œë ¥
+			gotoxy(55, 14);
+			printf("ìƒëŒ€ë°©ì´ %c%dë¥¼ ëƒˆìŠµë‹ˆë‹¤.", thrownCard.shape, thrownCard.num);
 			break;
 		}
 	}
-	if(turn==1)		//³¾ Ä«µå°¡ ¾øÀ»½Ã¿¡
+
+	if (turn == 1)
 	{
-		computer.list[computer.length++]=pop(deck2);
+		computer.list[computer.length++] = pop(deck2);
 		Print2();
-		turn=0;
+		turn = 0;
 	}
 }
 
-//------------------------°ÔÀÓÈ­¸é Ãâ·ÂÇÔ¼ö---------------------------------//
-void Print() // °ÔÀÓÈ­¸é Ãâ·Â
+
+//------------------------ê²Œì„í™”ë©´ ì¶œë ¥í•¨ìˆ˜---------------------------------//
+void Print() // ê²Œì„í™”ë©´ ì¶œë ¥
 {
-	int i=0,j=0;
-	removeCursor(); // Ä¿¼­¸¦ ¾ø¾Ú
-	system("cls"); // È­¸é Å¬¸®¾î
-	gotoxy(0,0);
-	printf(" ¦®¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¯\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦±¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦°\n");
-	
-	
-	//gotoxy(70,1); printf("1093060");
-	//gotoxy(70,2); printf(" ¹Ú»ó±Ô");
-	//gotoxy(55,8); printf("ÃÑ ³²Àº Ä«µå :  Àå");
-	//gotoxy(55,10); printf("³²Àº Ä«µå :  Àå ");
-	//gotoxy(55,12); printf("Â÷·Ê :  ");
-	//gotoxy(55,14); printf("¸ğ¾ç :  ");
-	
+	int i = 0, j = 0;
+	removeCursor(); // ì»¤ì„œë¥¼ ì—†ì•°
+	system("cls"); // í™”ë©´ í´ë¦¬ì–´
+	gotoxy(0, 0);
 
-	for(i=0; i<15; i++)
+
+
+
+
+	for (i = 0; i < 15; i++)
 	{
-		gotoxy(6+(i*4),2); printf("¦®¦¬¦¬¦¯");
-		gotoxy(6+(i*4),3); printf("¦­    ¦­");
-		gotoxy(6+(i*4),4); printf("¦­    ¦­");
-		gotoxy(6+(i*4),5); printf("¦±¦¬¦¬¦°");	
+		gotoxy(6 + (i * 4), 2); printf("â”â”â”â”“");
+		gotoxy(6 + (i * 4), 3); printf("â”ƒ    â”ƒ");
+		gotoxy(6 + (i * 4), 4); printf("â”ƒ    â”ƒ");
+		gotoxy(6 + (i * 4), 5); printf("â”—â”â”â”›");
 	}
-	for(i=0; i<15; i++)
+	for (i = 0; i < 15; i++)
 	{
-		gotoxy(6+(i*4),17); printf("¦®¦¬¦¬¦¯");
-		gotoxy(6+(i*4),18); printf("¦­    ¦­");
-		gotoxy(6+(i*4),19); printf("¦­    ¦­");
-		gotoxy(6+(i*4),20); printf("¦±¦¬¦¬¦°");
-	}	
-	
-	gotoxy(30,9); printf("¦®¦¬¦¬¦¯");
-	gotoxy(30,10); printf("¦­    ¦­");
-	gotoxy(30,11); printf("¦­    ¦­");
-	gotoxy(30,12); printf("¦±¦¬¦¬¦°");
+		gotoxy(6 + (i * 4), 17); printf("â”â”â”â”“");
+		gotoxy(6 + (i * 4), 18); printf("â”ƒ    â”ƒ");
+		gotoxy(6 + (i * 4), 19); printf("â”ƒ    â”ƒ");
+		gotoxy(6 + (i * 4), 20); printf("â”—â”â”â”›");
+	}
 
-	gotoxy(40,9); printf("¦®¦¬¦¬¦¯");
-	gotoxy(40,10); printf("¦­    ¦­");
-	gotoxy(40,11); printf("¦­    ¦­");
-	gotoxy(40,12); printf("¦±¦¬¦¬¦°");
-	
+	gotoxy(30, 9); printf("â”â”â”â”“");
+	gotoxy(30, 10); printf("â”ƒ    â”ƒ");
+	gotoxy(30, 11); printf("â”ƒ    â”ƒ");
+	gotoxy(30, 12); printf("â”—â”â”â”›");
+
+	gotoxy(40, 9); printf("â”â”â”â”“");
+	gotoxy(40, 10); printf("â”ƒ    â”ƒ");
+	gotoxy(40, 11); printf("â”ƒ    â”ƒ");
+	gotoxy(40, 12); printf("â”—â”â”â”›");
+
 }
 //----------------------------------------------------//
-//-------------------°ÔÀÓ ¸Ş´ºÇÔ¼ö--------------------//
-int MENU()  //°ÔÀÓ ¸Ş´º
+//-------------------ê²Œì„ ë©”ë‰´í•¨ìˆ˜--------------------//
+int MENU()  //ê²Œì„ ë©”ë‰´
 {
-	int key, menu=1;
-	system("cls"); // È­¸é Å¬¸®¾î
-	gotoxy(0,0); 
-	printf(" ¦®¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¯\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦­                                                                          ¦­\n");
-	printf(" ¦±¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦°\n");
-	gotoxy(70,1); printf("1093060");
-	gotoxy(70,2); printf(" ¹Ú»ó±Ô");
-	gotoxy(30,2);printf("        < ¸Ş ´º >          ");
-	gotoxy(30,5);printf(" ¦®¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¯");
-	gotoxy(30,6);printf(" ¦­    °ÔÀÓ ½ÃÀÛ     ¦­");
-	gotoxy(30,7);printf(" ¦±¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦°");
+	int key, menu = 1;
+	system("cls"); // í™”ë©´ í´ë¦¬ì–´
+	gotoxy(0, 0);
 
-	gotoxy(30,9);printf(" ¦®¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¯");
-	gotoxy(30,10);printf(" ¦­    °ÔÀÓ ¼³¸í     ¦­");
-	gotoxy(30,11);printf(" ¦±¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦°");
+	gotoxy(30, 2); printf("        < ë©” ë‰´ >          ");
+	gotoxy(30, 5); printf(" â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”“");
+	gotoxy(30, 6); printf(" â”ƒ     ê²Œì„ ì‹œì‘    â”ƒ");
+	gotoxy(30, 7); printf(" â”—â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”›");
 
-	gotoxy(30,13);printf(" ¦®¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¯");
-	gotoxy(30,14);printf(" ¦­    Á¾·á ÇÏ±â     ¦­");
-	gotoxy(30,15);printf(" ¦±¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦¬¦°");
-	
-	
-	while(1)
+	gotoxy(30, 9); printf(" â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”“");
+	gotoxy(30, 10); printf(" â”ƒ     ê²Œì„ ì„¤ëª…    â”ƒ");
+	gotoxy(30, 11); printf(" â”—â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”›");
+
+	gotoxy(30, 13); printf(" â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”“");
+	gotoxy(30, 14); printf(" â”ƒ     ì¢…ë£Œ í•˜ê¸°    â”ƒ");
+	gotoxy(30, 15); printf(" â”—â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”›");
+
+
+	while (1)
 	{
-		removeCursor(); // Ä¿¼­¸¦ ¾ø¾Ú
-		gotoxy(28,(menu*4)+2);//¼±ÅÃÇÑ ¸Ş´ºÀÇ ¿ŞÂÊ¿¡ ¢Ñ¸¦ Ãâ·Â
-		printf("¢Ñ");
-		key=_getch();
-		gotoxy(28,(menu*4)+2);//¢ÑÀÚ¸®¿¡ ºóÄ­À» Ã¤¿ö¼­ ¢Ñ¸ğ¾çÀ» ¾ø¾Ú
+		removeCursor(); // ì»¤ì„œë¥¼ ì—†ì•°
+		gotoxy(28, (menu * 4) + 2);//ì„ íƒí•œ ë©”ë‰´ì˜ ì™¼ìª½ì— â˜ë¥¼ ì¶œë ¥
+		printf("â˜");
+		key = _getch();
+		gotoxy(28, (menu * 4) + 2);//â˜ìë¦¬ì— ë¹ˆì¹¸ì„ ì±„ì›Œì„œ â˜ëª¨ì–‘ì„ ì—†ì•°
 		printf(" ");
-		switch(key)
+		switch (key)
 		{
-			case UP : menu--; // È­»ìÇ¥ À§¸¦ ¹Ş¾ÒÀ» °æ¿ì
-				if(menu<=0)
-					menu=3;
-				break;
+		case UP: menu--; // í™”ì‚´í‘œ ìœ„ë¥¼ ë°›ì•˜ì„ ê²½ìš°
+			if (menu <= 0)
+				menu = 3;
+			break;
 
-			case DOWN : menu++; // È­»ìÇ¥ ¾Æ·¡¸¦ ¹Ş¾ÒÀ» °æ¿ì 
-				if(menu>=4)
-					menu=1;
-				break;
+		case DOWN: menu++; // í™”ì‚´í‘œ ì•„ë˜ë¥¼ ë°›ì•˜ì„ ê²½ìš° 
+			if (menu >= 4)
+				menu = 1;
+			break;
 
-			case ENTER : return menu; // ¿£ÅÍ¸¦ ´©¸¥°æ¿ì
+		case ENTER: return menu; // ì—”í„°ë¥¼ ëˆ„ë¥¸ê²½ìš°
 		}
 	}
 }
 //----------------------------------------------------//
-//------------------- µµ¿ò¸» ÇÔ¼ö --------------------//
-void help() // µµ¿ò¸» Ãâ·Â
+//------------------- ë„ì›€ë§ í•¨ìˆ˜ --------------------//
+void help() // ë„ì›€ë§ ì¶œë ¥
 {
-	gotoxy(2,1); printf("¢Ñ ¿øÄ«µå°ÔÀÓ\n");
-	gotoxy(2,3); printf("1. Ä«µå´Â ÃÑ 54ÀåÀÌ´Ù. ¢À,¢¾,¡ß,¢¼ = A~10,J,Q,K 52Àå JOKER 2Àå\n");
-	gotoxy(2,4); printf("2. ¾Õ »ç¶÷ÀÌ ³½ ¼ıÀÚ¿¡ ÀÌ¾î¼­ °°Àº ¸ğ¾çÀÌ³ª °°Àº ¼ıÀÚÀÇ Ä«µå¸¦ ³»¸é\n"); 
-	gotoxy(2,5); printf("   µÇ´Â °ÔÀÓÀÌ´Ù. [¿¹ : ¢¼->¢¼, 10 -> 10 ]\n");
-	gotoxy(2,6); printf("3. play´Â ÄÄÇ»ÅÍ¿Í 1:1 ´ë°á±¸µµ \n");
-	gotoxy(2,9); printf("¢Ñ °ÔÀÓ ±ÔÄ¢\n");
-	gotoxy(2,11); printf("1. °ÔÀÓ½ÃÀÛ½Ã ·£´ıÄ«µå¸¦ 5Àå¾¿ ³ª´²°¡Áö°í 1ÀåÀ» µû·Î Áß¾Ó¿¡ ¹èÄ¡ÇÑ´Ù.\n");
-	gotoxy(2,12); printf("2. °°Àº ¼ıÀÚ³ª ¸ğ¾ç Ä«µå¸¦ ³¾ ¼ö ÀÖ´Ù. ³¾ °ÍÀÌ ¾øÀ» ½Ã¿¡´Â ÇÑÀåÀ» ¹Ş´Â´Ù.\n");
-	gotoxy(2,13); printf("3. J- ÅÏÁ¡ÇÁ , K- ÇÑ¹ø´õ , Q- ¼ø¼­¹Ù²Ş\n");
-	gotoxy(2,14); printf("4. 7 - (¢À,¢¾,¡ß,¢¼) ¸ğ¾ç ¹Ù²Ş\n");
-	gotoxy(2,15); printf("5. ¢À2,¢¾2,¡ß2,¢¼2 < ¢ÀA,¢¾A,¡ßA < ¢¼A \n");
-    gotoxy(2,16); printf("6. °ø°İÀ» ¸·À¸·Á¸é °°Àº¹«´Ì³ª ´õ ½ë Ä«µå·Î ¹æ¾î\n");
-	gotoxy(2,17); printf("7. Ä«µå¸¦ ¸ÕÀú ¾ø¾Ö´Â ÂÊÀÌ '½Â¸®'\n");
-	gotoxy(2,18); printf("8. Ä«µå°¡ 20ÀåÀÌ ³Ñ´Â ÂÊÀÌ 'ÆĞ¹è'\n");
-	gotoxy(2,22);printf("-¾Æ¹«Å°¸¦ ´©¸£¸é ¸ñÂ÷È­¸éÀ¸·Î µ¹¾Æ°©´Ï´Ù-\n");
+	gotoxy(2, 1); printf("â˜ ì›ì¹´ë“œê²Œì„\n");
+	gotoxy(2, 3); printf("1. ì¹´ë“œëŠ” ì´ 54ì¥ì´ë‹¤. â™£,â™¥,â—†,â™  = A~10,J,Q,K 52ì¥ JOKER 2ì¥\n");
+	gotoxy(2, 4); printf("2. ì• ì‚¬ëŒì´ ë‚¸ ìˆ«ìì— ì´ì–´ì„œ ê°™ì€ ëª¨ì–‘ì´ë‚˜ ê°™ì€ ìˆ«ìì˜ ì¹´ë“œë¥¼ ë‚´ë©´\n");
+	gotoxy(2, 5); printf("   ë˜ëŠ” ê²Œì„ì´ë‹¤. [ì˜ˆ : â™ ->â™ , 10 -> 10 ]\n");
+	gotoxy(2, 6); printf("3. playëŠ” ì»´í“¨í„°ì™€ 1:1 ëŒ€ê²°êµ¬ë„ \n");
+	gotoxy(2, 9); printf("â˜ ê²Œì„ ê·œì¹™\n");
+	gotoxy(2, 11); printf("1. ê²Œì„ì‹œì‘ì‹œ ëœë¤ì¹´ë“œë¥¼ 5ì¥ì”© ë‚˜ëˆ ê°€ì§€ê³  1ì¥ì„ ë”°ë¡œ ì¤‘ì•™ì— ë°°ì¹˜í•œë‹¤.\n");
+	gotoxy(2, 12); printf("2. ê°™ì€ ìˆ«ìë‚˜ ëª¨ì–‘ ì¹´ë“œë¥¼ ë‚¼ ìˆ˜ ìˆë‹¤. ë‚¼ ê²ƒì´ ì—†ì„ ì‹œì—ëŠ” í•œì¥ì„ ë°›ëŠ”ë‹¤.\n");
+	gotoxy(2, 13); printf("3. J- í„´ì í”„ , K- í•œë²ˆë” , Q- ìˆœì„œë°”ê¿ˆ\n");
+	gotoxy(2, 14); printf("4. 7 - (â™£,â™¥,â—†,â™ ) ëª¨ì–‘ ë°”ê¿ˆ\n");
+	gotoxy(2, 15); printf("5. â™£2,â™¥2,â—†2,â™ 2 < â™£A,â™¥A,â—†A < â™ A \n");
+	gotoxy(2, 16); printf("6. ê³µê²©ì„ ë§‰ìœ¼ë ¤ë©´ ê°™ì€ë¬´ëŠ¬ë‚˜ ë” ìˆ ì¹´ë“œë¡œ ë°©ì–´\n");
+	gotoxy(2, 17); printf("7. ì¹´ë“œë¥¼ ë¨¼ì € ì—†ì• ëŠ” ìª½ì´ 'ìŠ¹ë¦¬'\n");
+	gotoxy(2, 18); printf("8. ì¹´ë“œê°€ 20ì¥ì´ ë„˜ëŠ” ìª½ì´ 'íŒ¨ë°°'\n");
+	gotoxy(2, 22); printf("-ì•„ë¬´í‚¤ë¥¼ ëˆ„ë¥´ë©´ ëª©ì°¨í™”ë©´ìœ¼ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤-\n");
 	removeCursor();
 }
 //----------------------------------------------------//
-//------------------------°ÔÀÓÇÔ¼ö--------------------//
+//------------------------ê²Œì„í•¨ìˆ˜--------------------//
 void Game()
 {
-	int key, onbar=1;
-	int i=0;
+	int key, onbar = 1;
+	int i = 0;
 	Print();
 	Game_init();
 	Print2();
 
-	
-	
-	while(1)
+
+
+	while (1)
 	{
-		if(deck2->top<8)
+		if (deck2->top < 8)
 		{
 			card_charge();
 		}
-		if(turn==0)
+		if (turn == 0)
 		{
-			removeCursor(); // Ä¿¼­¸¦ ¾ø¾Ú
-			gotoxy((onbar*4)+2,21); 
-			printf(" ¡â");
-			key=_getch();
-			gotoxy((onbar*4)+2,21);
+			removeCursor(); // ì»¤ì„œë¥¼ ì—†ì•°
+			gotoxy((onbar * 4) + 2, 21);
+			printf(" â–³");
+			key = _getch();
+			gotoxy((onbar * 4) + 2, 21);
 			printf("  ");
-			switch(key)
+			switch (key)
 			{
-			
-				case UP:
-					gotoxy(41,13);
-					printf(" ¡â");
-					key=_getch();
-					if(key==ENTER)
-					{
-						card_select(&you);
-						turn=1;
-					}
-					gotoxy(41,13); printf("  ");
-					break;
-				
-				case LEFT: onbar--;		//È­»ìÇ¥ ¿ŞÂÊÀ» ¹Ş¾ÒÀ» °æ¿ì
-					if(onbar<=0)
-						onbar=15;
-					break;
-				case RIGHT: onbar++;		//È­»ìÇ¥ ¿À¸¥ÂÊÀ» ¹Ş¾ÒÀ» °æ¿ì
-					if(onbar>=16)
-						onbar=1;
-					break;
-				case DOWN:
-					onbar=1;
-					break;
-				case ENTER:
-						card_throw(onbar-1);
-						
+
+			case UP:
+				gotoxy(41, 13);
+				printf(" â–³");
+				key = _getch();
+				if (key == ENTER)
+				{
+					card_select(&you);
+					turn = 1;
+				}
+				gotoxy(41, 13); printf("  ");
+				break;
+
+			case LEFT: onbar--;		//í™”ì‚´í‘œ ì™¼ìª½ì„ ë°›ì•˜ì„ ê²½ìš°
+				if (onbar <= 0)
+					onbar = 15;
+				break;
+			case RIGHT: onbar++;		//í™”ì‚´í‘œ ì˜¤ë¥¸ìª½ì„ ë°›ì•˜ì„ ê²½ìš°
+				if (onbar >= 16)
+					onbar = 1;
+				break;
+			case DOWN:
+				onbar = 1;
+				break;
+			case ENTER:
+				card_throw(onbar - 1);
+
 			}
 		}
-		else if(turn==1)
+		else if (turn == 1)
 		{
 			card_throw_c();
 		}
@@ -664,38 +618,38 @@ void Game()
 
 //------------------------------------------------------//
 
-//------------------¸Ş´º ÃÊÀÌ½º ÇÔ¼ö--------------------//
+//------------------ë©”ë‰´ ì´ˆì´ìŠ¤ í•¨ìˆ˜--------------------//
 void choice()
 {
 	int menu;
-	while(1)
+	while (1)
 	{
-		menu=MENU();
-		if(menu==1)
+		menu = MENU();
+		if (menu == 1)
 		{
 			system("cls");
 			Game();
-			getchar();		//ÀÔ·Â¹ŞÀ»¶§±îÁö ±â´Ù¸²
+			getchar();		//ì…ë ¥ë°›ì„ë•Œê¹Œì§€ ê¸°ë‹¤ë¦¼
 		}
-		if(menu==2)
+		if (menu == 2)
 		{
 			system("cls");
 			help();
 			getchar();
 		}
-		if(menu==3)
+		if (menu == 3)
 		{
 			system("cls");
 			exit(0);
 		}
 	}
 }
-	
+
 //----------------------------------------------------//
 
-//---------------------¸ŞÀÎ ÇÔ¼ö----------------------//
+//---------------------ë©”ì¸ í•¨ìˆ˜----------------------//
 int main()
- {
+{
 	choice();
 }
 //----------------------------------------------------//
