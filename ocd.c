@@ -1,4 +1,5 @@
-﻿#include <stdio.h>
+﻿#pragma warning (disable:4996)
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
@@ -16,16 +17,16 @@
 
 void Print(void);//----------------------------------카드 섞는함수---------------------------//
 
-//---------------------------카드정보구조체선언------------------------------//
+//카드정보 구조체
 typedef struct Cardinfo {
 	int num;
 	char shape;
 }Cardinfo;
 
 Cardinfo* deck;
-//--------------------------------------------------------------------------//
 
-//------------------------------스택 구조체선언-----------------------------//
+
+//스택구조체선언
 typedef struct {
 	Cardinfo item[MAX_CARD_SIZE];			//stack -> Cardinfo item
 	int top;
@@ -34,9 +35,9 @@ typedef struct {
 CardStack* deck2;
 CardStack* deck3;
 int turn = 0;
-//--------------------------------------------------------------------------//
 
-//-----------------------------커서,gotoxy함수-----------------------------//
+
+//커서
 void removeCursor(void) // 커서를 안보이게한다
 {
 	CONSOLE_CURSOR_INFO curInfo;
@@ -81,9 +82,8 @@ void print_lose() {
 	gotoxy(30, 13);
 	printf("Pleas any key~");
 }
-//--------------------------------------------------------------------------//
 
-//---------------------------------스택선언---------------------------------//
+//스택
 void init(CardStack* s)
 {
 	s->top = -1;			// top변수는 스택에 아무런데이터가 없으면 -1값을 가진다.
@@ -121,21 +121,20 @@ Cardinfo pop(CardStack* s)						//	스택에서 하나의 요소를 제거
 	else return s->item[(s->top)--];				// 비어있지 않으면 top이 가리키는 값을 반환하고 top을 하나 감소시킨다.
 }
 
-Cardinfo peek(CardStack* s)
-{
-	if (is_empty(s))
-	{
+Cardinfo peek(CardStack* s) {
+	if (is_empty(s)) {
 		fprintf(stderr, "스택 공백 에러\n");
 		exit(1);
 	}
-	else return s->item[s->top];
+	else
+		return s->item[s->top];
 }
-//--------------------------------------------------------------------------//
+
 typedef struct {
 	Cardinfo list[MAX_LIST_SIZE];	  // 배열 정의
 	int length;		  // 현재 배열에 저장된 항목들의 개수
 } ArrayListType;
-//--------------------------------------------------------------------------//
+
 
 void init_list(ArrayListType* l)
 {
@@ -169,7 +168,7 @@ Cardinfo delete_list(ArrayListType* l, int position)
 {
 	int i;
 	Cardinfo item;
-	//-----------------------------------추가---------------------------------
+	
 	if (l->length == 1 && turn == 0)
 	{
 		system("cls");
@@ -182,7 +181,7 @@ Cardinfo delete_list(ArrayListType* l, int position)
 		print_lose();
 		exit(1);
 	}
-	//------------------------------------------------------------------------
+	
 	item = l->list[position];
 	for (i = position; i < (l->length - 1); i++)
 		l->list[i] = l->list[i + 1];
@@ -192,7 +191,7 @@ Cardinfo delete_list(ArrayListType* l, int position)
 
 ArrayListType you;
 ArrayListType computer;
-//----------------------------------카드 섞는함수---------------------------//
+//카드섞기
 void shuffle(Cardinfo* deck)
 {
 	int i, j, n = 0;
@@ -216,9 +215,9 @@ void shuffle(Cardinfo* deck)
 
 	}
 }
-//---------------------------------------------------------------------//
 
-//---------------------------카드 초기화함수---------------------------//
+
+//카드초기화
 void card_init()
 {
 	int i, j;
@@ -246,9 +245,8 @@ void card_init()
 		push(deck2, deck[i]);
 	}
 }
-//----------------------------------------------------------------------//
 
-//---------------------------게임 초기화함수----------------------------//
+//게임초기화
 void Game_init()
 {
 	int i = 0;
@@ -264,7 +262,7 @@ void Game_init()
 	init(deck3);
 	push(deck3, pop(deck2));//한장
 }
-//---------------------------------------------------------------------//
+
 void Card_Attack(ArrayListType* u, Cardinfo a)
 {
 	if (a.num == 2)			// 숫자2 == 카드2장받기
@@ -286,7 +284,7 @@ void Card_Attack(ArrayListType* u, Cardinfo a)
 			turn = 1;
 	}
 }
-//---------------------------카드 내용출력함수-------------------------//
+//카드내용 출력
 void Print2()
 {
 
@@ -337,14 +335,22 @@ void Print2()
 	{
 		//gotoxy(8 + (i * 4), 3); printf("%c", computer.list[i].shape);
 		//gotoxy(8 + (i * 4), 4); printf("%d", computer.list[i].num);
-		gotoxy(8+(i*4),3); printf("?");
-	    gotoxy(8+(i*4),4); printf("?");
+
+		gotoxy(8 + (i * 4), 3); printf("?");
+		gotoxy(8 + (i * 4), 4); printf("?");
 	}
 
 	for (i = computer.length; i < 15; i++)
 	{
 		gotoxy(8 + (i * 4), 3);  printf("");
 		gotoxy(8 + (i * 4), 4);  printf("");
+		if (turn == 1)
+		{
+			gotoxy(8 + (i * 4), 3);
+			printf("  ");
+			gotoxy(8 + (i * 4), 4);
+			printf("  ");
+		}
 	}
 
 	if (peek(deck3).shape == 'd')
@@ -378,7 +384,7 @@ void Print2()
 		gotoxy(32, 11); printf("K ");
 	}
 }
-//---------------------------------------------------------------------------//
+
 void card_select(ArrayListType* u)
 {
 	if (is_full_list(u))
@@ -394,6 +400,7 @@ void card_select(ArrayListType* u)
 		Print2();		//카드받아오고 출력
 	}
 }
+
 
 void card_throw(int position)
 {
@@ -447,46 +454,44 @@ void card_throw_c(void)
 }
 
 
-//------------------------게임화면 출력함수---------------------------------//
+
 void Print() // 게임화면 출력
 {
-	int i = 0, j = 0;
+	int i = 0;
+
 	removeCursor(); // 커서를 없앰
 	system("cls"); // 화면 클리어
 	gotoxy(0, 0);
 
-
-
-
-
 	for (i = 0; i < 15; i++)
 	{
-		gotoxy(6 + (i * 4), 2); printf("┏━━┓");
+		gotoxy(6 + (i * 4), 2); printf("┏━━━━┓"); 
 		gotoxy(6 + (i * 4), 3); printf("┃    ┃");
 		gotoxy(6 + (i * 4), 4); printf("┃    ┃");
-		gotoxy(6 + (i * 4), 5); printf("┗━━┛");
+		gotoxy(6 + (i * 4), 5); printf("┗━━━━┛");
 	}
+
 	for (i = 0; i < 15; i++)
 	{
-		gotoxy(6 + (i * 4), 17); printf("┏━━┓");
+		gotoxy(6 + (i * 4), 17); printf("┏━━━━┓");  
 		gotoxy(6 + (i * 4), 18); printf("┃    ┃");
 		gotoxy(6 + (i * 4), 19); printf("┃    ┃");
-		gotoxy(6 + (i * 4), 20); printf("┗━━┛");
+		gotoxy(6 + (i * 4), 20); printf("┗━━━━┛");
 	}
 
-	gotoxy(30, 9); printf("┏━━┓");
+	gotoxy(30, 9); printf("┏━━━━┓");  
 	gotoxy(30, 10); printf("┃    ┃");
 	gotoxy(30, 11); printf("┃    ┃");
-	gotoxy(30, 12); printf("┗━━┛");
+	gotoxy(30, 12); printf("┗━━━━┛");
 
-	gotoxy(40, 9); printf("┏━━┓");
+	gotoxy(40, 9); printf("┏━━━━┓");  
 	gotoxy(40, 10); printf("┃    ┃");
 	gotoxy(40, 11); printf("┃    ┃");
-	gotoxy(40, 12); printf("┗━━┛");
-
+	gotoxy(40, 12); printf("┗━━━━┛");
 }
-//----------------------------------------------------//
-//-------------------게임 메뉴함수--------------------//
+
+
+
 int MENU()  //게임 메뉴
 {
 	int key, menu = 1;
@@ -531,29 +536,24 @@ int MENU()  //게임 메뉴
 		}
 	}
 }
-//----------------------------------------------------//
-//------------------- 도움말 함수 --------------------//
+
 void help() // 도움말 출력
 {
 	gotoxy(2, 1); printf("☞ 원카드게임\n");
-	gotoxy(2, 3); printf("1. 카드는 총 54장이다. ♣,♥,◆,♠ = A~10,J,Q,K 52장 JOKER 2장\n");
+	gotoxy(2, 3); printf("1. 카드는 총 52장이다. ♣,♥,◆,♠ = A~10,J,Q,K 52장\n");
 	gotoxy(2, 4); printf("2. 앞 사람이 낸 숫자에 이어서 같은 모양이나 같은 숫자의 카드를 내면\n");
 	gotoxy(2, 5); printf("   되는 게임이다. [예 : ♠->♠, 10 -> 10 ]\n");
 	gotoxy(2, 6); printf("3. play는 컴퓨터와 1:1 대결구도 \n");
 	gotoxy(2, 9); printf("☞ 게임 규칙\n");
 	gotoxy(2, 11); printf("1. 게임시작시 랜덤카드를 5장씩 나눠가지고 1장을 따로 중앙에 배치한다.\n");
 	gotoxy(2, 12); printf("2. 같은 숫자나 모양 카드를 낼 수 있다. 낼 것이 없을 시에는 한장을 받는다.\n");
-	gotoxy(2, 13); printf("3. J- 턴점프 , K- 한번더 , Q- 순서바꿈\n");
-	gotoxy(2, 14); printf("4. 7 - (♣,♥,◆,♠) 모양 바꿈\n");
-	gotoxy(2, 15); printf("5. ♣2,♥2,◆2,♠2 < ♣A,♥A,◆A < ♠A \n");
-	gotoxy(2, 16); printf("6. 공격을 막으려면 같은무늬나 더 쎈 카드로 방어\n");
-	gotoxy(2, 17); printf("7. 카드를 먼저 없애는 쪽이 '승리'\n");
-	gotoxy(2, 18); printf("8. 카드가 20장이 넘는 쪽이 '패배'\n");
-	gotoxy(2, 22); printf("-아무키를 누르면 목차화면으로 돌아갑니다-\n");
+	gotoxy(2, 13); printf("3. ♣2,♥2,◆2,♠2 < ♣A,♥A,◆A < ♠A \n");
+	gotoxy(2, 14); printf("4. 카드를 먼저 없애는 쪽이 '승리'\n");
+	gotoxy(2, 15); printf("5. 카드가 20장이 넘는 쪽이 '패배'\n");
+	gotoxy(2, 22); printf("-엔터키를 누르면 목차화면으로 돌아갑니다-\n");
 	removeCursor();
 }
-//----------------------------------------------------//
-//------------------------게임함수--------------------//
+//게임 함수
 void Game()
 {
 	int key, onbar = 1;
@@ -616,9 +616,7 @@ void Game()
 	}
 }
 
-//------------------------------------------------------//
-
-//------------------메뉴 초이스 함수--------------------//
+//메뉴선택 
 void choice()
 {
 	int menu;
@@ -645,11 +643,8 @@ void choice()
 	}
 }
 
-//----------------------------------------------------//
-
-//---------------------메인 함수----------------------//
+//메인
 int main()
 {
 	choice();
 }
-//----------------------------------------------------//
